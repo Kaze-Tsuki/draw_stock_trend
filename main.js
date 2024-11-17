@@ -1,12 +1,17 @@
 import linearRegression from "./analysis.js"
 
+//points and lines record all fetched infos
+var points=[], lines=[];
+// showed_stock prevent double fetching the same stock
+var showed_stock = [];
 
 // 將事件綁定放在這裡
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("submit").addEventListener("click", submit);
 });
 
-function show_graph(tbl)
+//add value into points and lines, then update graph
+function add_data(tbl, name)
 {
     // 散點數據
     var xValues = tbl.map(item => parseFloat(item["月份"]));
@@ -18,37 +23,57 @@ function show_graph(tbl)
         x: xValues,
         y: yValues,
         mode: 'markers',
-        name: '價位'
+        name: name
     };
 
     const trace2 = {
         x: xValues,
         y: regressionY,
         mode: 'lines',
-        name: '回歸直線'
+        name: name+"點"
     };
+    points.push(trace1);
+    lines.push(trace2);
+    show_graph();
+}
+
+//update graph
+function show_graph()
+{
 
     const layout = {
         title: '線性回歸分析',
         xaxis: { title: '月份' },
         yaxis: { title: '均價' }
     };
-    Plotly.newPlot('myDiv', [trace1, trace2], layout);
+
+    Plotly.react('myDiv', points.concat(lines), layout);
 }
 
 async function submit()
 {
-    // fetch
+    // init
     var stock_id = document.getElementById("input_stock");
-    console.log("股票代號：" + stock_id.value);
-    var html_tbl = await fetchAndConvertTableToJSON(stock_id.value);
-    console.log("以下為讀取到的資料");
-    for(var i = 0; i < html_tbl.length; i++)
+    //check same stock
+    if(showed_stock.includes(stock_id.value))
     {
-        console.log(html_tbl[i]);
+        alert(`Has Showed ${stock_id.value}`);
+        return;
     }
+
+    console.log("股票代號：" + stock_id.value);
+    showed_stock.push(stock_id.value);
+
+    //fetch
+    var {data: html_tbl, firstRow: stockName} = await fetchAndConvertTableToJSON(stock_id.value);
+    // show fetched info
+    console.log("以下為讀取到的資料");
+    for(var i = 0; i < html_tbl.length; i++)console.log(html_tbl[i]);
+
+    console.log(stockName);
+
     //update graph
-    show_graph(html_tbl);
+    add_data(html_tbl, stockName);
 }
 
 async function fetchAndConvertTableToJSON(stock) 
@@ -66,7 +91,8 @@ async function fetchAndConvertTableToJSON(stock)
             console.error(`無法取得數據，HTTP 錯誤狀態碼：${response.status}`);
             return;
         }
-    
+        
+        // 將html檔轉文字，再parse
         const htmlText = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlText, 'text/html');
@@ -77,7 +103,10 @@ async function fetchAndConvertTableToJSON(stock)
             console.error("找不到表格數據，請確認股票代碼是否正確。");
             return;
         }
-    
+        
+        // 讀取表格名稱
+        const firstRow = table.querySelector("thead > tr > th").innerText.replace(/\s+/g, ' ').trim();
+
         // 讀取表頭資料 從第二行開始
         const headers = Array.from(table.querySelectorAll("thead tr:nth-child(2) th")).map(th => th.innerText.trim());
     
@@ -101,11 +130,9 @@ async function fetchAndConvertTableToJSON(stock)
         // const json = JSON.stringify(data, null, 2);
         // console.log(json);
 
-        return data;
+        return {data, firstRow};
     } catch (error) {
         console.error("發生錯誤：", error);
     }
 }
-    
-fetchAndConvertTableToJSON("0050"); // 測試有效股票代碼
   
