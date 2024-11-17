@@ -76,6 +76,7 @@ async function submit()
     add_data(html_tbl, stockName);
 }
 
+// fetch json return {data, firstRow}
 async function fetchAndConvertTableToJSON(stock) 
 {
     if (!stock || stock === "0") {

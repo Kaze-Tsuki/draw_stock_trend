@@ -6,6 +6,7 @@
 2. 展示API
 3. 找回歸線
 4. 分析數據
+5. 加入CSS
 
 ### 目前進度
 
@@ -28,6 +29,41 @@
 
 目前沒有使用矩陣運算，而是使用最小平方法計算(標準差那個)  
 使用的函式在analysis裡面(linearRegression)
+
+### 加入CSS
+
+可以變美觀，但不加也無傷大雅
+
+## 函式與變數功用
+
+### submit
+
+綁定按鈕，會先fetch api，再更新圖表
+
+### fetchAndConvertTableToJSON
+
+將api以json檔的形式傳回  
+其回傳為二參數 {data, firstRow}
+分別為json檔與該股票的名稱
+
+### show_graph
+
+使用全局變數points & lines更新圖表
+
+### add_data
+
+傳入json檔，取出其均價與月份  
+生成回歸線，並將寫入points 和 lines  
+自動呼叫show_graph更新圖表
+
+### addEventListener
+
+請勿更動，確保按鈕與submit可以連接
+
+### linearRegression
+
+屬於數據分析  
+使用最小平方法找出回歸線
 
 ## DEBUGGER
 
