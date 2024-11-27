@@ -83,3 +83,4 @@
 特徵：Failed to load resource: net::ERR_FAILED  
 檢查方式：console報錯會有"has been blocked by CORS policy"  
 修復方式：請使用伺服器(php, python, node.js)開啟一個server
+hello world
