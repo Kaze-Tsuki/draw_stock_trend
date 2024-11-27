@@ -1,4 +1,6 @@
 import linearRegression from "./analysis.js"
+import MultivariateLinearRegression from 'https://cdn.skypack.dev/ml-regression-multivariate-linear';
+import { SimpleLinearRegression } from 'https://cdn.skypack.dev/ml-regression-simple-linear';
 
 //points and lines record all fetched infos
 var points=[], lines=[];
@@ -16,7 +18,8 @@ function add_data(tbl, name)
     // 散點數據
     var xValues = tbl.map(item => parseFloat(item["月份"]));
     var yValues = tbl.map(item => parseFloat(item["加權(A/B)平均價"].replace(/,/g, "")));
-    const { slope, intercept } = linearRegression(xValues, yValues);
+    // const { slope, intercept } = linearRegression(xValues, yValues);
+    const {slope, intercept} = new SimpleLinearRegression(xValues, yValues);
     const regressionY = xValues.map(xi => slope * xi + intercept);
 
     const trace1 = {
