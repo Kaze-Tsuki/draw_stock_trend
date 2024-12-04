@@ -1,4 +1,4 @@
-export default function linearRegression(x, y) {
+export function linearRegression(x, y) {
     const n = x.length;
 
     // 計算 sums
@@ -14,7 +14,7 @@ export default function linearRegression(x, y) {
     return { slope: m, intercept: b };
 }
 
-export default function multiLinearRegression
+export function multiLinearRegression
     (gold, exchange, weighted_stock, debt, y) {
     // weight gold, exchange, weighted_stock, debt to x1 & x2
     const x1 = gold.map((val, i) => val * 0.1 + exchange[i] * 0.2 + weighted_stock[i] * 0.3 + debt[i] * 0.4);
