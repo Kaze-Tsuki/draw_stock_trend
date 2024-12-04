@@ -1,9 +1,19 @@
-import linearRegression from "./analysis.js"
+import {linearRegression, multiLinearRegression} from "./analysis.js"
 
 //points and lines record all fetched infos
 var points=[], lines=[];
 // showed_stock prevent double fetching the same stock
 var showed_stock = [];
+
+// following are the const(in 12 months) will be filled by hand
+// gold price
+var gold_price = [];
+// exchange rate
+var exchange_rate = [];
+// weighted stock price
+var weighted_stock_price = [];
+// public debt
+var public_debt = [];
 
 // 將事件綁定放在這裡
 document.addEventListener("DOMContentLoaded", function() {
@@ -73,7 +83,19 @@ async function submit()
     console.log(stockName);
 
     //update graph
+    connect(html_tbl);
     add_data(html_tbl, stockName);
+}
+
+function connect(html_tbl)
+{
+    // parse out stock price
+    var stock_price = html_tbl.map(item => parseFloat(item["加權(A/B)平均價"].replace(/,/g, "")));
+    // call the analyser & get weighted index array
+    const { c, a, b, x1, x2 } = multiLinearRegression(weighted_stock_price, gold_price, exchange_rate, public_debt, stock_price);
+    
+    // generate plotly 3D graph
+    add_data_3d(x1, x2, stock_price, c, a, b);
 }
 
 // fetch json return {data, firstRow}
