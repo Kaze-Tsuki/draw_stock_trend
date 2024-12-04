@@ -1,56 +1,89 @@
-import linearRegression from "./analysis.js"
-import MultivariateLinearRegression from 'https://cdn.skypack.dev/ml-regression-multivariate-linear';
-import { SimpleLinearRegression } from 'https://cdn.skypack.dev/ml-regression-simple-linear';
+import {linearRegression, multiLinearRegression} from "./analysis.js"
 
-//points and lines record all fetched infos
-var points=[], lines=[];
+var cur_stock_id = 0;
 // showed_stock prevent double fetching the same stock
 var showed_stock = [];
+
+// following are the const(in 12 months) will be filled by hand
+// gold price
+var gold_price = [];
+// exchange rate
+var exchange_rate = [];
+// weighted stock price
+var weighted_stock_price = [];
+// public debt
+var public_debt = [];
 
 // 將事件綁定放在這裡
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("submit").addEventListener("click", submit);
 });
 
-//add value into points and lines, then update graph
-function add_data(tbl, name)
-{
-    // 散點數據
-    var xValues = tbl.map(item => parseFloat(item["月份"]));
-    var yValues = tbl.map(item => parseFloat(item["加權(A/B)平均價"].replace(/,/g, "")));
-    // const { slope, intercept } = linearRegression(xValues, yValues);
-    const {slope, intercept} = new SimpleLinearRegression(xValues, yValues);
-    const regressionY = xValues.map(xi => slope * xi + intercept);
+// Add value into points and planes, then update graph
+function add_data_3d(x1, x2, stock_price, c, a, b) {
+    // 三維散點數據
+    var points = [], planes = [];
+    // x1, x2, stock_price
 
+    // y = c + ax1 + bx2
+    // 構建回歸平面
+    const xRange = [Math.min(...x1), Math.max(...x1)];
+    const yRange = [Math.min(...x2), Math.max(...x2)];
+    const xGrid = [];
+    const yGrid = [];
+    const zGrid = [];
+
+    for (let x = xRange[0]; x <= xRange[1]; x += (xRange[1] - xRange[0]) / 10) {
+        const rowX = [], rowY = [], rowZ = [];
+        for (let y = yRange[0]; y <= yRange[1]; y += (yRange[1] - yRange[0]) / 10) {
+            rowX.push(x);
+            rowY.push(y);
+            rowZ.push(a * x + b * y + c);   //需要你們的方程式
+        }
+        xGrid.push(rowX);
+        yGrid.push(rowY);
+        zGrid.push(rowZ);
+    }
+
+    // 三維散點
     const trace1 = {
-        x: xValues,
-        y: yValues,
+        x: x1,
+        y: x2,
+        z: stock_price,
         mode: 'markers',
-        name: name
+        type: 'scatter3d',
+        name: cur_stock_id,
+        marker: { size: 4, color: 'blue' }
     };
 
-    const trace2 = {
-        x: xValues,
-        y: regressionY,
-        mode: 'lines',
-        name: name+"點"
+    // 回歸平面
+    const surface = {
+        x: xGrid.flat(),
+        y: yGrid.flat(),
+        z: zGrid.flat(),
+        type: 'surface',
+        name: `回歸平面`,
+        opacity: 0.6,
+        colorscale: 'Viridis'
     };
+
     points.push(trace1);
-    lines.push(trace2);
-    show_graph();
+    planes.push(surface);
+    show_graph(trace1, surface);
 }
 
-//update graph
-function show_graph()
-{
-
+// Update graph
+function show_graph(dots, surface) {
     const layout = {
-        title: '線性回歸分析',
-        xaxis: { title: '月份' },
-        yaxis: { title: '均價' }
+        title: '三維線性回歸分析',
+        scene: {
+            xaxis: { title: 'idx_1' },
+            yaxis: { title: 'idx_2' },
+            zaxis: { title: '均價' }
+        }
     };
 
-    Plotly.react('myDiv', points.concat(lines), layout);
+    Plotly.react('myDiv', [dots, surface], layout);
 }
 
 async function submit()
@@ -58,7 +91,7 @@ async function submit()
     // init
     var stock_id = document.getElementById("input_stock");
     //check same stock
-    if(showed_stock.includes(stock_id.value))
+    if(cur_stock_id == stock_id.value)
     {
         alert(`Has Showed ${stock_id.value}`);
         return;
@@ -74,9 +107,22 @@ async function submit()
     for(var i = 0; i < html_tbl.length; i++)console.log(html_tbl[i]);
 
     console.log(stockName);
+    cur_stock_id = stock_id.value;
 
     //update graph
-    add_data(html_tbl, stockName);
+    connect(html_tbl);
+
+}
+
+function connect(html_tbl)
+{
+    // parse out stock price
+    var stock_price = html_tbl.map(item => parseFloat(item["加權(A/B)平均價"].replace(/,/g, "")));
+    // call the analyser & get weighted index array
+    const { c, a, b, x1, x2 } = multiLinearRegression(weighted_stock_price, gold_price, exchange_rate, public_debt, stock_price);
+    
+    // generate plotly 3D graph
+    add_data_3d(x1, x2, stock_price, c, a, b);
 }
 
 // fetch json return {data, firstRow}
