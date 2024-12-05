@@ -77,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function() {
 // Add value into points and planes, then update graph
 function add_data_3d(x1, x2, stock_price, c, a, b) {
     // 三維散點數據
-    var points = [], planes = [];
     // x1, x2, stock_price
 
     // y = c + ax1 + bx2
@@ -121,7 +120,6 @@ function add_data_3d(x1, x2, stock_price, c, a, b) {
         opacity: 0.6,
         colorscale: 'Viridis'
     };
-    console.log(surface)
 
     const layout = {
         title: '三維線性回歸分析',
