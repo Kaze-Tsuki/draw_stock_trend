@@ -4,15 +4,70 @@ var cur_stock_id = 0;
 // showed_stock prevent double fetching the same stock
 var showed_stock = [];
 
-// following are the const(in 12 months) will be filled by hand
+// following are the const(in 12 months of 2023) will be filled by hand
 // gold price
-var gold_price = [];
+var gold_price = [
+    1962.2,
+    1853.2,
+    2004.1,
+    2018.3,
+    1982.1,
+    1929.4,
+    2009.2,
+    1965.9,
+    1885.4,
+    1994.3,
+    2038.1,
+    2071.8
+];
+
 // exchange rate
-var exchange_rate = [];
+var exchange_rate = [
+    29.994,
+    30.715,
+    30.535,
+    30.738,
+    30.693,
+    31.129,
+    31.433,
+    31.844,
+    32.23,
+    32.468,
+    31.361,
+    30.682
+];
+
 // weighted stock price
-var weighted_stock_price = [];
+var weighted_stock_price = [
+    14137.69,
+    15625.2,
+    15503.79,
+    15868.06,
+    15579.18,
+    16578.96,
+    16915.54,
+    17145.43,
+    16634.51,
+    16353.74,
+    16001.27,
+    17433.85
+];
+
 // public debt
-var public_debt = [];
+var public_debt = [
+    1.29,
+    1.2,
+    1.19,
+    1.19,
+    1.19,
+    1.17,
+    1.16,
+    1.18,
+    1.18,
+    1.25,
+    1.32,
+    1.26
+];
 
 // 將事件綁定放在這裡
 document.addEventListener("DOMContentLoaded", function() {
@@ -58,22 +113,16 @@ function add_data_3d(x1, x2, stock_price, c, a, b) {
 
     // 回歸平面
     const surface = {
-        x: xGrid.flat(),
-        y: yGrid.flat(),
-        z: zGrid.flat(),
+        x: xGrid,
+        y: yGrid,
+        z: zGrid,
         type: 'surface',
         name: `回歸平面`,
         opacity: 0.6,
         colorscale: 'Viridis'
     };
+    console.log(surface)
 
-    points.push(trace1);
-    planes.push(surface);
-    show_graph(trace1, surface);
-}
-
-// Update graph
-function show_graph(dots, surface) {
     const layout = {
         title: '三維線性回歸分析',
         scene: {
@@ -83,8 +132,9 @@ function show_graph(dots, surface) {
         }
     };
 
-    Plotly.react('myDiv', [dots, surface], layout);
+    Plotly.react('myDiv', [trace1, surface], layout);
 }
+
 
 async function submit()
 {
@@ -133,7 +183,7 @@ async function fetchAndConvertTableToJSON(stock)
     return;
     }
 
-    const url = `https://www.twse.com.tw/rwd/zh/afterTrading/FMSRFK?date=20241114&stockNo=${stock}&response=html`;
+    const url = `https://www.twse.com.tw/rwd/zh/afterTrading/FMSRFK?date=20230101&stockNo=${stock}&response=html`;
 
     try {
         const response = await fetch(url);

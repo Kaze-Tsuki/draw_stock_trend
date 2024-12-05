@@ -18,8 +18,11 @@ export function multiLinearRegression
     (gold, exchange, weighted_stock, debt, y) {
     // weight gold, exchange, weighted_stock, debt to x1 & x2
     const x1 = gold.map((val, i) => val * 0.1 + exchange[i] * 0.2 + weighted_stock[i] * 0.3 + debt[i] * 0.4);
-    const x2 = gold.map((val, i) => val * 0.4 + exchange[i] * 0.3 + weighted_stock[i] * 0.2 + debt * 0.1);
-
+    const x2 = gold.map((val, i) => val * 0.4 + exchange[i] * 0.3 + weighted_stock[i] * 0.2 + debt[i] * 0.1);
+    
+    console.log("x1: ", x1);
+    console.log("x2: ", x2);
+    console.log("y: ", y);
     // Running the function to find the curve coefficients
     const result = FunctionSet.run(x1, x2, y);
 
