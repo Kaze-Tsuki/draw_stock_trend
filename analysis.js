@@ -15,10 +15,10 @@ export function linearRegression(x, y) {
 }
 
 export function multiLinearRegression
-    (gold, exchange, weighted_stock, debt, y) {
+    (weighted_stock, gold, exchange, debt, y) {
     // weight gold, exchange, weighted_stock, debt to x1 & x2
-    const x1 = gold.map((val, i) => val * 0.1 + exchange[i] * 0.2 + weighted_stock[i] * 0.3 + debt[i] * 0.4);
-    const x2 = gold.map((val, i) => val * 0.4 + exchange[i] * 0.3 + weighted_stock[i] * 0.2 + debt[i] * 0.1);
+    const x1 = gold.map((val, i) => val * 0.561 + exchange[i] * -0.696 + weighted_stock[i] * 1 + debt[i] * -1.048);
+    const x2 = gold.map((val, i) => val * 1.325 + exchange[i] * 1.188 + weighted_stock[i] * 1 + debt[i] * 0.875);
     
     console.log("x1: ", x1);
     console.log("x2: ", x2);

@@ -4,6 +4,9 @@ var cur_stock_id = 0;
 // showed_stock prevent double fetching the same stock
 var showed_stock = [];
 
+// slope
+var slope = [0, 0, 0];
+
 // following are the const(in 12 months of 2023) will be filled by hand
 // gold price
 var gold_price = [
@@ -72,6 +75,9 @@ var public_debt = [
 // 將事件綁定放在這裡
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("submit").addEventListener("click", submit);
+});
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("caculate").addEventListener("change", predict);
 });
 
 // Add value into points and planes, then update graph
@@ -162,15 +168,34 @@ async function submit()
 
 }
 
+function predict()
+{
+    var gold = document.getElementById("input_gold").value;
+    var exchange = document.getElementById("input_exchange").value;
+    var public_debt = document.getElementById("input_debt").value;
+    var weighted = document.getElementById("input_weighted").value;
+    // caculate idx_1 & idx_2
+    // gold * 0.561 + exchange * -0.696 + weighted * 1 + public_debt * -1.048 = x1
+    // gold * 1.325 + exchange * 1.188 + weighted * 1 + public_debt * 0.875 = x2
+    var x1 = gold * 0.561 + exchange * -0.696 + weighted * 1 + public_debt * -1.048;
+    var x2 = gold * 1.325 + exchange * 1.188 + weighted * 1 + public_debt * 0.875;
+    // predict y = [0] + [1] * x1 + [2] * x2
+    var predict = slope[0] + slope[1] * x1 + slope[2] * x2;
+    document.getElementById("idx_1").innerText = x1;
+    document.getElementById("idx_2").innerText = x2;
+    document.getElementById("result").innerText = predict;
+}
+
 function connect(html_tbl)
 {
     // parse out stock price
     var stock_price = html_tbl.map(item => parseFloat(item["加權(A/B)平均價"].replace(/,/g, "")));
     // call the analyser & get weighted index array
     const { c, a, b, x1, x2 } = multiLinearRegression(weighted_stock_price, gold_price, exchange_rate, public_debt, stock_price);
-    
+    slope = [c, a, b];
     // generate plotly 3D graph
     add_data_3d(x1, x2, stock_price, c, a, b);
+    predict();
 }
 
 // fetch json return {data, firstRow}
