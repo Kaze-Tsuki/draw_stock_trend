@@ -21,7 +21,13 @@ var gold_price = [
     1885.4,
     1994.3,
     2038.1,
-    2071.8
+    2071.8,
+    2057.4,
+    2054.7,
+    2227.1,
+    2302.9,
+    2333.9,
+    2350.9
 ];
 
 // exchange rate
@@ -37,7 +43,13 @@ var exchange_rate = [
     32.23,
     32.468,
     31.361,
-    30.682
+    30.682,
+    31.22,
+    31.629,
+    31.942,
+    32.602,
+    32.465,
+    32.504
 ];
 
 // weighted stock price
@@ -53,7 +65,13 @@ var weighted_stock_price = [
     16634.51,
     16353.74,
     16001.27,
-    17433.85
+    17433.85,
+    17930.81,
+    17889.56,
+    18966.77,
+    20294.45,
+    20396.6,
+    21174.22
 ];
 
 // public debt
@@ -69,7 +87,13 @@ var public_debt = [
     1.18,
     1.25,
     1.32,
-    1.26
+    1.26,
+    1.23,
+    1.2,
+    1.23,
+    1.45,
+    1.67,
+    1.61
 ];
 
 // 將事件綁定放在這裡
@@ -155,16 +179,19 @@ async function submit()
     showed_stock.push(stock_id.value);
 
     //fetch
-    var {data: html_tbl, firstRow: stockName} = await fetchAndConvertTableToJSON(stock_id.value);
+    var {data: html_tbl23, firstRow: stockName} = await fetchAndConvertTableToJSON(stock_id.value, 2023);
+    var {data: html_tbl24} = await fetchAndConvertTableToJSON(stock_id.value, 2024);
+    var merged_tbl = html_tbl23;
+    for(var i = 0; i < 6; i++)merged_tbl.push(html_tbl24[i]);
     // show fetched info
     console.log("以下為讀取到的資料");
-    for(var i = 0; i < html_tbl.length; i++)console.log(html_tbl[i]);
+    for(var i = 0; i < merged_tbl.length; i++)console.log(merged_tbl[i]);
 
     console.log(stockName);
     cur_stock_id = stock_id.value;
 
     //update graph
-    connect(html_tbl);
+    connect(merged_tbl);
 
 }
 
@@ -199,14 +226,14 @@ function connect(html_tbl)
 }
 
 // fetch json return {data, firstRow}
-async function fetchAndConvertTableToJSON(stock) 
+async function fetchAndConvertTableToJSON(stock, year) 
 {
     if (!stock || stock === "0") {
     console.error("請輸入有效的股票代碼。");
     return;
     }
 
-    const url = `https://www.twse.com.tw/rwd/zh/afterTrading/FMSRFK?date=20230101&stockNo=${stock}&response=html`;
+    const url = `https://www.twse.com.tw/rwd/zh/afterTrading/FMSRFK?date=${year}0101&stockNo=${stock}&response=html`;
 
     try {
         const response = await fetch(url);
