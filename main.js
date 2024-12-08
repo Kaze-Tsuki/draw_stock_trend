@@ -154,8 +154,8 @@ function add_data_3d(x1, x2, stock_price, c, a, b) {
     const layout = {
         title: '三維線性回歸分析',
         scene: {
-            xaxis: { title: 'idx_1' },
-            yaxis: { title: 'idx_2' },
+            xaxis: { title: 'index 1' },
+            yaxis: { title: 'index 2' },
             zaxis: { title: '均價' }
         }
     };
@@ -211,7 +211,7 @@ function predict()
     predict = predict.toFixed(2);
     x1 = x1.toFixed(2);
     x2 = x2.toFixed(2);
-    
+
     document.getElementById("idx_1").innerText = x1;
     document.getElementById("idx_2").innerText = x2;
     document.getElementById("result").innerText = predict;

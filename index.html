@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>股票回歸線</title>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="add_on/style.css"/>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script type="module" src="main.js" defer></script>
+    <script src="add_on/add_on.js"></script>
     <!-- <link rel="stylesheet" href="style.css"/> -->
 </head>
 <body>
-    <h1 id="pageTitle">線性代數分析股票</h1>
-    <div>
+    <div id="title">
+        <img src="add_on/menu.png" alt="menu.png" id="menu" onclick="call_menu()">
+        <h1>線性代數分析股票</h1>
+    </div>
+    <ul id="menu_box">
+        <li id="link_formula" class="menu_link"><p onclick="formula()">查看公式</a></li>
+        <li id="link_about" class="menu_link"><p onclick="about()">關於網頁</a></li>
+    </ul>
+    
+    <div id="input_graph">
         <p class="hint" onclick="disable(this)">輸入股票代號，提交</p>
         <input type="text" name="輸入股票代號" id="input_stock" class="textInput"></input>
         <div id="submit" >送出 &#11181;</div>
@@ -37,14 +46,10 @@
 
     </div>
     <div style="margin-top: 10px;">
-        <p class="predict">caculate index 1: <span id="idx_1"></span></p>
-        <p class="predict">caculate index 2: <span id="idx_2"></span></p>
-        <p class="predict">result: <span id="result"></span></p>
+        <p class="predict">Index 1: <span id="idx_1"></span></p>
+        <p class="predict">Index 2: <span id="idx_2"></span></p>
+        <p class="predict">Result: <span id="result"></span></p>
     </div>
     
-    
-    <script>
-        disable = (ele) => ele.style.display = "none";
-    </script>
 </body>
 </html>
