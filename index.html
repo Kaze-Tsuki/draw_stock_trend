@@ -4,26 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>股票回歸線</title>
+    <link rel="stylesheet" href="style.css"/>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script type="module" src="main.js" defer></script>
     <!-- <link rel="stylesheet" href="style.css"/> -->
 </head>
 <body>
-    <h1 id="pageTitle">視覺化api</h1>
-    <p>輸入股票代號，提交</p>
-    <input type="text" name="輸入股票代號" id="input_stock"></input>
-    <button id="submit" >送出 &#11181;</button>
+    <h1 id="pageTitle">線性代數分析股票</h1>
+    <div>
+        <p class="hint" onclick="disable(this)">輸入股票代號，提交</p>
+        <input type="text" name="輸入股票代號" id="input_stock" class="textInput"></input>
+        <div id="submit" >送出 &#11181;</div>
+    </div>
+    
     <div id="myDiv"></div>
     <!-- <script src="analysis.js"></script> -->
     <div id = "caculate" onchange="">
-        <input type="number" name="輸入黃金價格(美元)" id="input_gold" value="2071"></input>
-        <input type="number" name="輸入美元匯率(美元/台幣)價格" id="input_exchange" value="30"></input>
-        <input type="number" name="輸入十年期國債利率(%)" id="input_debt" value="1.26"></input>
-        <input type="number" name="輸入台股加權指數" id="input_weighted" value="17433.85"></input>
+        <table>
+            <tr>
+                <th>輸入黃金價格</th>
+                <th>輸入美元匯率(美元/台幣)價格</th>
+                <th>輸入十年期國債利率(%)</th>
+                <th>輸入台股加權指數</th>
+            </tr>
+            <tr>
+                <td><input type="number" class="textInput" id="input_gold" value="2771"></input></td>
+                <td><input type="number" class="textInput" id="input_exchange" value="30"></input></td>
+                <td><input type="number" class="textInput" id="input_debt" value="1.3"></input></td>
+                <td><input type="number" class="textInput" id="input_weighted" value="23000"></input></td>
+            </tr>
+          </table>
+
     </div>
-    <p>caculate idx_1: <span id="idx_1"></span></p>
-    <p>caculate idx_2: <span id="idx_2"></span></p>
-    <p>result: <span id="result"></span></p>
+    <div style="margin-top: 10px;">
+        <p class="predict">caculate index 1: <span id="idx_1"></span></p>
+        <p class="predict">caculate index 2: <span id="idx_2"></span></p>
+        <p class="predict">result: <span id="result"></span></p>
+    </div>
     
+    
+    <script>
+        disable = (ele) => ele.style.display = "none";
+    </script>
 </body>
 </html>

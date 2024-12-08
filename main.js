@@ -201,13 +201,17 @@ function predict()
     var exchange = document.getElementById("input_exchange").value;
     var public_debt = document.getElementById("input_debt").value;
     var weighted = document.getElementById("input_weighted").value;
+
     // caculate idx_1 & idx_2
-    // gold * 0.561 + exchange * -0.696 + weighted * 1 + public_debt * -1.048 = x1
-    // gold * 1.325 + exchange * 1.188 + weighted * 1 + public_debt * 0.875 = x2
     var x1 = gold * 0.561 + exchange * -0.696 + weighted * 1 + public_debt * -1.048;
     var x2 = gold * 1.325 + exchange * 1.188 + weighted * 1 + public_debt * 0.875;
     // predict y = [0] + [1] * x1 + [2] * x2
     var predict = slope[0] + slope[1] * x1 + slope[2] * x2;
+
+    predict = predict.toFixed(2);
+    x1 = x1.toFixed(2);
+    x2 = x2.toFixed(2);
+    
     document.getElementById("idx_1").innerText = x1;
     document.getElementById("idx_2").innerText = x2;
     document.getElementById("result").innerText = predict;
